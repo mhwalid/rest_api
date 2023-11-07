@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Looping Over Data</title>
+</head>
+<body>
+    <h1>Looping Over Data</h1>
+
+    <ul>
+        {% for item in data %}
+            <li> <a href="{{ path('getitem', {'item': item}) }}"> {{ item.siren }} </a> is {{ item.nom_raison_sociale }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
