@@ -8,6 +8,9 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\CompanyRepository;
+use App\Entity\Company;
 
 
 
@@ -33,10 +36,27 @@ class SearchController extends AbstractController
     }
 
     #[Route('/details', name: 'getitem')]
-    public function getitem(Request $request)
-    { 
-        dd($request->query->all('item'));
-        // dd($request);
+    public function getitem(Request $request, CompanyRepository $companyrepo,EntityManagerInterface $em)
+    {  
+       
+        // Get the Entity Manager
+        $result=$request->query->all('item');
+         // Create a new Company 
+         $company = $companyrepo->findOneBy(['siren' => $result['siren']]);
+         if($company === null){
+            $company = new Company();
+            $company->setRaisonSociale($result['nom_raison_sociale'] ?? '');
+            $company->setSiren($result['siren']);
+            $company->setSiret($result['siege']['siret']);
+            $company->setAdresse($result['siege']['adresse']);
+
+            // Persist the object
+            $em->persist($company);
+            // Flush changes to the database
+            $em->flush();
+         }
+
+      return $this->render('show.html.twig', ['company' => $company]);
     }
 
 

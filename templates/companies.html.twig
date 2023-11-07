@@ -8,7 +8,9 @@
 
     <ul>
         {% for item in data %}
+            {% if item.nom_raison_sociale %}
             <li> <a href="{{ path('getitem', {'item': item}) }}"> {{ item.siren }} </a> is {{ item.nom_raison_sociale }}</li>
+               {% endif %}  
         {% endfor %}
     </ul>
 </body>
