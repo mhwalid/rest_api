@@ -12,6 +12,23 @@
     <label>{{company.siret}}</label></br>
     <h5>Adresse:</h5>
     <label>{{company.adresse}}</label></br>
-    <input type="text"  name="salaire" >
+
+    <form action="{{ path('getDetailsApi') }}" method="post">
+        <label for="fname">Salaire :</label><br>
+        <input type="hidden" value="{{company.siren}}" name="siren" >
+        <input type="text"  name="salaire" >
+    </form>
+
+    {% if content is defined %}
+     <h4>avant impôt</h4>
+     <p>la cotisation salariale  :{{content['evaluate'][0]['nodeValue']}}</p>
+     <p>le coût employeur :{{content['evaluate'][0]['missingVariables']["salarié . cotisations . prévoyances . santé . taux employeur"]}}</p>
+     <h4>Stage</h4>
+     <p>la cotisation salariale  :{{content['evaluate'][1]['nodeValue']}}</p>
+     <h4>alternant</h4>
+     <p>la cotisation salariale  :{{content['evaluate'][2]['nodeValue']}}</p>
+     <h4>CDD</h4>
+     <p>la cotisation salariale  :{{content['evaluate'][3]['nodeValue']}}</p>
+    {% endif %}
 </body>
 </html>

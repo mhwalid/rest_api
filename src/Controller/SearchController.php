@@ -59,5 +59,42 @@ class SearchController extends AbstractController
       return $this->render('show.html.twig', ['company' => $company]);
     }
 
+    #[Route('/details_api', name: 'getDetailsApi')]
+    public function getDetailsApi(Request $request,CompanyRepository $companyrepo,EntityManagerInterface $em )
+    {  
+
+        $url = 'https://mon-entreprise.urssaf.fr/api/v1/evaluate';
+        $data = [
+            'situation' => [
+                'salarié . contrat . salaire brut' => [
+                    'valeur' => $request->get('salaire'),
+                    'unité' => '€ / mois',
+                ],
+                'salarié . contrat' => 'CDI',
+            ],
+            'expressions' => [
+                'salarié . rémunération . net . à payer avant impôt',
+                'salarié . contrat . stage . gratification minimale',
+                'salarié . coût total employeur',
+                'salarié . cotisations . salarié',
+                'salarié . contrat . CDD . indemnité de fin de contrat',
+            ],
+        ];
+        $client = HttpClient::create();
+        $response = $client->request('POST', $url, [
+            'json' => $data,
+        ]);
+
+        // Traitez la réponse ici
+        $statusCode = $response->getStatusCode();
+        $content = $response->toArray();
+        $company = $companyrepo->findOneBy(['siren' => $request->get('siren')]);
+        // dd($company);
+        // Faites quelque chose avec $statusCode et $content
+            // dd($content['evaluate'][0]['missingVariables']["salarié . cotisations . prévoyances . santé . montant"]);
+        // Retournez la réponse ou effectuez d'autres opérations nécessaires
+        return $this->render('show.html.twig', ['company' => $company, 'content'=>$content]);
+    }
+
 
 }
