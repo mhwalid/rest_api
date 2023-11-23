@@ -1,17 +1,15 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Looping Over Data</title>
-</head>
-<body>
-    <h1>Looping Over Data</h1>
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Liste d'entreprise correspondantes</h1>
 
     <ul>
-        {% for item in data %}
-            {% if item.nom_raison_sociale %}
-            <li> <a href="{{ path('getitem', {'item': item}) }}"> {{ item.siren }} </a> is {{ item.nom_raison_sociale }}</li>
+        {% for company in datas["results"] %}
+            {% if company.siren %}
+            <li> {{ company.nom_complet }} : <a href="{{ path('getCompany', {'company': company}) }}">{{ company.siren }} </a></li>
                {% endif %}  
         {% endfor %}
     </ul>
-</body>
-</html>
+
+    <p>Nombre de résultat : {{ datas["total_results"] }}</p>
+{% endblock %}

@@ -23,8 +23,9 @@ class Company
     #[ORM\Column(type: 'string', length: 16, nullable: true)]
     private ?string $siret;
 
-    #[ORM\Column(type: 'text', nullable: true)]
-    private ?string $adresse;
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Address $address = null;
 
     // Getters and setters for each property
 
@@ -66,14 +67,18 @@ class Company
         return $this;
     }
 
-    public function getAdresse(): ?string
+
+    public function getAddress(): ?Address
     {
-        return $this->adresse;
+        return $this->address;
     }
 
-    public function setAdresse(?string $adresse): self
+    public function setAddress(Address $address): static
     {
-        $this->adresse = $adresse;
+        $this->address = $address;
+
         return $this;
     }
+
+
 }

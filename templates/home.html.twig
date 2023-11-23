@@ -1,5 +1,13 @@
-{# templates/lucky/number.html.twig #}
-<form action="{{ path('getname') }}" method="post">
-    <label for="fname">First name:</label><br>
-    <input type="text"  name="searchvar" >
-</form>
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <form action="{{ path('listCompanies') }}" method="post">
+        <div>
+            <label for="companySearch">Recherche d'entreprise :</label>
+            <input type="text" id="companySearch" name="companySearch">
+        </div>
+        <div>
+            <button type="submit">Rechercher</button>
+        </div>
+    </form>
+{% endblock %}

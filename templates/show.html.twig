@@ -1,34 +1,104 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Looping Over Data</title>
-</head>
-<body>
-    <h5>Siren:</h5>
-    <label>{{company.siren}}</label></br>
-    <h5>Nom raison sociale:</h5>
-    <label>{{company.raisonSociale}}</label></br>
-    <h5>Siret:</h5>
-    <label>{{company.siret}}</label></br>
-    <h5>Adresse:</h5>
-    <label>{{company.adresse}}</label></br>
+{% extends 'base.html.twig' %}
 
-    <form action="{{ path('getDetailsApi') }}" method="post">
-        <label for="fname">Salaire :</label><br>
-        <input type="hidden" value="{{company.siren}}" name="siren" >
-        <input type="text"  name="salaire" >
+{% block title %}Détails de l'entreprise séléctionnée{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        table {
+            width: 60%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <h1>Information de l'entreprise</h1>
+    <table>
+        <tr>
+            <th>Raison sociale</th>
+            <td>{{ company.raisonSociale }}</td>
+        </tr>
+        <tr>
+            <th>SIREN</th>
+            <td>{{ company.siren }}</td>
+        </tr>
+        <tr>
+            <th>SIRET</th>
+            <td>{{ company.siret }}</td>
+        </tr>
+        <tr>
+            <th>Adresse</th>
+            <td>{{ company.address.numero }} {{ company.address.voie }} {{ company.address.cdp }} {{ company.address.ville }}</td>
+        </tr>
+        <tr>
+            <th>Coordonnées</th>
+            <td>{{ company.address.gpsLongitude }} , {{ company.address.gpsLatitude }}</td>
+        </tr>
+    </table>
+
+    <form action="{{ path('calculateSalary') }}" method="post">
+        <label for="salaireBrut">Salaire brut :</label>
+        <input type="number" id="salaireBrut" name="salaireBrut" required>
+        <button type="submit">Calculer</button>
     </form>
 
-    {% if content is defined %}
-     <h4>avant impôt</h4>
-     <p>la cotisation salariale  :{{content['evaluate'][0]['nodeValue']}}</p>
-     <p>le coût employeur :{{content['evaluate'][0]['missingVariables']["salarié . cotisations . prévoyances . santé . taux employeur"]}}</p>
-     <h4>Stage</h4>
-     <p>la cotisation salariale  :{{content['evaluate'][1]['nodeValue']}}</p>
-     <h4>alternant</h4>
-     <p>la cotisation salariale  :{{content['evaluate'][2]['nodeValue']}}</p>
-     <h4>CDD</h4>
-     <p>la cotisation salariale  :{{content['evaluate'][3]['nodeValue']}}</p>
+    {% if datasCalculate is defined %}
+        <table>
+            <thead>
+            <tr>
+                <th>Type de contrat</th>
+                <th>Salaire net avec impôt</th>
+                <th>Cotisation salariale</th>
+                <th>Coût employeur</th>
+                <th>Gratification minimale</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for typeContrat, data in datasCalculate %}
+                <tr>
+                    <td>{{ typeContrat }}</td>
+                    <td>
+                        {% if data['Salaire net avec impôt'] is defined %}
+                            {{ data['Salaire net avec impôt'] }} €
+                        {% else %}
+                            Non disponible
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if data['Cotisation salariale'] is defined %}
+                            {{ data['Cotisation salariale'] }} €
+                        {% else %}
+                            Non disponible
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if data['Coût employeur'] is defined %}
+                            {{ data['Coût employeur'] }} €
+                        {% else %}
+                            Non disponible
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if data['Gratification minimale'] is defined %}
+                            {{ data['Gratification minimale'] }} €
+                        {% else %}
+                            Non disponible
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     {% endif %}
-</body>
-</html>
+{% endblock %}
