@@ -1,0 +1,150 @@
+{
+	"info": {
+		"_postman_id": "7e2d335c-f4b9-419b-b927-c1cc6ff348f3",
+		"name": "API-Rest",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "13305763"
+	},
+	"item": [
+		{
+			"name": "Liste CSV",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/csv",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:8000/api-ouverte-ent-liste",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api-ouverte-ent-liste"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Liste JSON",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/csv",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:8000/api-ouverte-ent-liste",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api-ouverte-ent-liste"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get SIREN",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "POST Company",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"siren\": \"596770977\",\r\n    \"raison_sociale\": \"23\",\r\n    \"adresse\": {\r\n        \"ville\": \"Montbeliard\",\r\n        \"code_postale\": \"25200\",\r\n        \"voie\": \"Rue des olivier\",\r\n        \"num\": 12,\r\n        \"gps\": {\r\n            \"latitude\": \"23.0987655663\",\r\n            \"longitude\": \"23.0987655663\"\r\n        }\r\n    }\r\n\r\n    \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8000/api-ouverte-entreprise",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api-ouverte-entreprise"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE Company",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "basile",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "basile",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"siren\": \"596770977\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8000/api-protege",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api-protege"
+					],
+					"query": [
+						{
+							"key": "siren",
+							"value": "886667",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Request",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	]
+}

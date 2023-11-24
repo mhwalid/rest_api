@@ -211,16 +211,16 @@ class CompanyController extends AbstractController
     #[Route('/api-ouverte-ent-liste', name: 'api_ouverte_ent_liste', methods: ['GET'])]
     public function listeEntreprises(Request $request, SerializerInterface $serializer): Response
     {
+        if ($request->getMethod() !== 'GET') {
+            return new Response('Méthode : ' . $request->getMethod() . ' non autorisée. Méthode GET uniquement', 405);
+        }
+
         $formatDemande = $request->headers->get('Accept');
 
         $companies = $this->em->getRepository(Company::class)->findAll();
 
         if (empty($companies)) {
             return new Response("Aucune entreprise enregistrée", 200);
-        }
-
-        if ($request->getMethod() !== 'GET') {
-            return new Response('Méthode : ' . $request->getMethod() . ' non autorisée. Méthode GET uniquement', 405);
         }
 
         if ($formatDemande === 'application/json') {
@@ -283,13 +283,16 @@ class CompanyController extends AbstractController
     #[Route('/api-ouverte-ent', name: 'entreprise_info', methods: ['GET'])]
     public function getInfoBySiren(Request $request): Response
     {
-        $siren = $request->query->get('siren');
-
-        $companyExists = $this->em->getRepository(Company::class)->findOneBy(['siren' => $siren]);
-
         if ($request->getMethod() !== 'GET') {
             return new Response('Méthode : '. $request->getMethod()  . ' non autorisée. Méthode GET uniquement', 405);
         }
+
+        if ($request->query->get('siren')) {
+            return new Response('Bad request le siren doit être définis', 400);
+        }
+        $siren = $request->query->get('siren');
+
+        $companyExists = $this->em->getRepository(Company::class)->findOneBy(['siren' => $siren]);
 
         if (!$companyExists) {
             return new Response('Aucune entreprise trouvée avec le siren : ' . $siren, 404);
@@ -312,12 +315,12 @@ class CompanyController extends AbstractController
     #[Route('/api-ouverte-entreprise', name: 'create_entreprise', methods: ['POST'])]
     public function createEntreprise(Request $request): Response
     {
-        $jsonData = $request->getContent();
-        $data = json_decode($jsonData, true);
-
         if ($request->getMethod() !== 'POST') {
             return new Response('Méthode : '. $request->getMethod()  . ' non autorisée. Méthode POST uniquement', 405);
         }
+
+        $jsonData = $request->getContent();
+        $data = json_decode($jsonData, true);
 
         if (!$data) {
             return new Response('Format JSON invalide', 400);
@@ -568,7 +571,7 @@ class CompanyController extends AbstractController
         $this->em->flush();
 
         // Répondre avec un message et un code HTTP approprié
-        return new Response('Entreprise modifiée', 200, ['Location' => '/url_de_la_nouvelle_ressource']);
+        return new Response('Entreprise modifiée', 200);
     }
 
     #[Route('/api-protege', name: 'protege_entreprise_delete', methods: ['DELETE'])]
@@ -620,6 +623,7 @@ class CompanyController extends AbstractController
         if (count($authHeaderParts) !== 2 || $authHeaderParts[0] !== 'Basic') {
             return false;
         }
+
 
         $credentials = base64_decode($authHeaderParts[1]);
         [$username, $password] = explode(':', $credentials);
